@@ -149,6 +149,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         Fenos\Notifynder\NotifynderServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
         /*
          * Application Service Providers...
