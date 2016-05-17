@@ -12,5 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('app.home');
+});
+
+Route::auth();
+
+Route::group(['namespace' => 'App'], function () {
+    Route::get('/home', 'HomeController@index');
 });
