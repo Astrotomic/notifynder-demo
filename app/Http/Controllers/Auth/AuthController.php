@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use Fenos\Notifynder\Builder\NotifynderBuilder;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -64,9 +65,23 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'password' => bcrypt($data['password']),
         ]);
+        \Notifynder::category('user.welcome')
+            ->from(0)
+            ->to($user)
+            ->url('#')
+            ->send();
+
+        $users = User::whereNotIn('id', [$user->getKey()])->get();
+        \Notifynder::loop($users, function(NotifynderBuilder $builder, User $receiver) use($user) {
+            $builder->category('user.registered')
+                ->from($user)
+                ->to($receiver)
+                ->url('#');
+        })->send();
+        return $user;
     }
 }
