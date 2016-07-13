@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Fenos\Notifynder\Notifable;
+use Fenos\Notifynder\Traits\Notifable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable

@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
-use Fenos\Notifynder\Builder\NotifynderBuilder;
-use Validator;
+use Fenos\Notifynder\Builder\Builder;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -51,7 +50,7 @@ class AuthController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        return \Validator::make($data, [
             'name' => 'required|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
         ]);
@@ -72,15 +71,13 @@ class AuthController extends Controller
         \Notifynder::category('user.welcome')
             ->from(0)
             ->to($user)
-            ->url('#')
             ->send();
 
         $users = User::whereNotIn('id', [$user->getKey()])->get();
-        \Notifynder::loop($users, function(NotifynderBuilder $builder, User $receiver) use($user) {
+        \Notifynder::loop($users, function(Builder $builder, User $receiver) use ($user) {
             $builder->category('user.registered')
                 ->from($user)
-                ->to($receiver)
-                ->url('#');
+                ->to($receiver);
         })->send();
         return $user;
     }

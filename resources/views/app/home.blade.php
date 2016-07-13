@@ -20,13 +20,18 @@
             @if(\Auth::check())
                 <div class="panel panel-default">
                     <div class="panel-heading">Notifications</div>
-                    <ul class="list-group">
-                        @foreach(\Auth::user()->getNotifications() as $notification)
-                        <li class="list-group-item">
-                            {{ $notification->text }}
-                        </li>
+                    <div class="list-group">
+                        @foreach(\Auth::user()->notifications as $notification)
+                        <div class="list-group-item">
+                            <strong class="list-group-item-heading" data-toggle="collapse" data-target="#notification_json_{{ $notification->getKey() }}">
+                                {{ $notification->text }}
+                            </strong>
+                            <div class="list-group-item-text collapse" id="notification_json_{{ $notification->getKey() }}">
+                                <pre><code class="hljs">{{ json_print($notification) }}</code></pre>
+                            </div>
+                        </div>
                         @endforeach
-                    </ul>
+                    </div>
                 </div>
             @endif
 
